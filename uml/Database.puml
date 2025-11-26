@@ -1,0 +1,156 @@
+@startuml
+!theme toy
+
+' =================== Сущности ===================
+entity "Order" as Order {
+    * <<PK>> id: bigint
+    # <<FK>> client_id: bigint <<Index>>
+    # <<FK>> delivery_address_id: bigint
+    # <<FK>> status_id: bigint
+    # <<FK>> courier_id: bigint <<Index>>
+    # <<FK>> store_id: bigint <<Index>>
+    # <<FK>> transaction_id bigint
+    + create_date: timestamp
+    + expected_delivery_date: timestamp <<CHECK: [>create_date]>>
+    + delivery_date: timestamp <<CHECK: [>create_date]>>
+}
+
+entity "Product" as Product {
+    * <<PK>> id: bigint
+    # <<FK>> category_id: bigint <<Index>>
+    + name: character(100) <<Index>>
+    + description: text
+}
+
+entity "Review" as Review {
+    * <<PK>> id: bigint
+    # <<FK>> order_id: bigint
+    + grade: bigint <<CHECK: [0...5]>>
+    + text: text
+}
+
+entity "Store" as Store {
+    * <<PK>> id: bigint
+    # <<FK>> address_id: bigint
+    + name: character(100) <<Index>>
+    + phone: character(30) <<Unique>>
+    + grade: decimal <<CHECK: [0...5]>>
+}
+
+entity "Client" as Client {
+    * <<PK>> id: bigint
+    + firstname: character(100)
+    + lastname: character(100)
+    + email: character(100) <<Unique>>
+    + phone: character(30) <<Index>> <<Unique>>
+}
+
+entity "Address" as Address {
+    * <<PK>> id: bigint
+    # <<FK>> city_id: bigint <<Index>>
+    + street: character(200) <<Index>>
+    + house: character(200)
+    + entrance: character(200)
+    + apartment: character(200)
+}
+
+entity "Status" as Status {
+    * <<PK>> id: bigint
+    + name: character(30) <<Unique>>
+}
+
+entity "Courier" as Courier {
+    * <<PK>> id: bigint
+    # <<FK>> transport_id: bigint
+    + firstname: character(100)
+    + lastname: character(100)
+    + email: character(100) <<Unique>>
+    + phone: character(30) <<Index>> <<Unique>>
+    + grade: decimal <<CHECK: [0...5]>>
+}
+
+entity "Transport" as Transport {
+    * <<PK>> id: bigint
+    + name: character(100) <<Unique>>
+    + diameter: smallint
+}
+
+entity "OperatingHours" as OperatingHours {
+    * <<PK>> id: bigint
+    # <<FK>> store_id: bigint
+    # <<FK>> day_of_week_id: bigint
+    + open_time: time
+    + close_time: time
+    + is_сlosed: boolean
+}
+
+entity "DayOfWeek" as DayOfWeek {
+    * <<PK>> id: bigint
+    + name: character(30) <<Unique>>
+}
+
+entity "ProductCategory" as ProductCategory {
+    * <<PK>> id: bigint
+    + name: character(100) <<Unique>>
+}
+
+entity "City" as City {
+    * <<PK>> id: bigint
+    + name: character(100) <<Unique>>
+}
+
+entity "Transaction" as Transaction {
+    * <<PK>> id: bigint
+    + sum: money <<CHECK: [>0]>>
+}
+
+' =================== Связующие таблицы (Many-to-Many) ===================
+
+entity "OrderProduct" as OrderProduct {
+    # <<FK>> order_id: bigint
+    # <<FK>> product_id: bigint
+    + amount: bigint <<CHECK: [>0]>>
+}
+
+entity "StoreProduct" as StoreProduct {
+    * <<PK>> store_id: bigint <<Index>>
+    * <<PK>> product_id: bigint
+    + price: decimal <<CHECK: [>0]>>
+    + amount: bigint <<CHECK: [>0]>>
+    + measurement: character(30)
+}
+
+entity "ClientAddress" as ClientAddress {
+    # <<FK>> client_id: bigint
+    # <<FK>> address_id: bigint
+}
+
+' =================== Отношения (согласно Ключевым связям) ===================
+
+Order "1" -- "*" Review
+Order "1" -- "1" Transaction
+Store "1" -- "*" Order
+Client "1" -- "*" Order
+Address "1" -- "*" Order
+Status "1" -- "*" Order
+Courier "1" -- "*" Order
+Store "1" -- "*" Address
+Store "1" -- "*" OperatingHours
+City "1" -- "*" Address
+ProductCategory "1" -- "*" Product
+Transport "1" -- "*" Courier
+OperatingHours "1" -- "1" DayOfWeek
+
+' Order - Product: Many-to-Many -> OrderProduct (Связующая таблица)
+Product "1" -- "*" OrderProduct
+Order "1" -- "*" OrderProduct
+
+' Store - Product: Many-to-Many -> StoreProduct (Связующая таблица)
+Store "1" -- "*" StoreProduct
+Product "1" -- "*" StoreProduct
+
+' Client - Address: Many-to-Many -> ClientAddress (Связующая таблица)
+Client "1" -- "*" ClientAddress
+Address "1" -- "*" ClientAddress
+
+@enduml
