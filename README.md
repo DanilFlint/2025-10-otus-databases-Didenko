@@ -200,3 +200,19 @@
 `ALTER TABLE ProductCategory ADD CONSTRAINT name_constraint UNIQUE (name);` - не должна повторяться категория продукта  
 `ALTER TABLE Order ADD CONSTRAINT time_constraint CHECK (expected_delivery_date > create_date AND delivery_date > create_date);` - ожидаемая дата доставки должна быть больше даты создания заказа  
 
+## HW3
+1. Развернуть контейнер с PostgreSQL или установить СУБД на виртуальную машину.
+
+`cd 2025-10-otus-databases-Didenko`  
+`docker-compose up -d`
+
+![img.png](img/img.png)
+2. Создать клиента с подключением к базе данных postgres через командную строку.
+
+![img_1.png](img/img_1.png)  
+
+3. Подключиться к серверу используя pgAdmin или другое аналогичное приложение.
+
+![img_2.png](img/img_2.png)
+
+
