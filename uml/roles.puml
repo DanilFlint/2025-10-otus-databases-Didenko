@@ -1,0 +1,74 @@
+@startuml
+skinparam actorStyle awesome
+
+"ProducersDeveloper" as ProducersDeveloper
+"DeliveryDeveloper" as DeliveryDeveloper
+"BankingDeveloper" as BankingDeveloper
+"ConsumersDeveloper" as ConsumersDeveloper
+
+"ProducersClient" as ProducersClient
+"DeliveryClient" as DeliveryClient
+"BankingClient" as BankingClient
+"ConsumersClient" as ConsumersClient
+
+usecase "ALL_PRIVILEGES" as ALL_PRIVILEGES_rules_producers
+usecase "ALL_PRIVILEGES" as ALL_PRIVILEGES_rules_delivery
+usecase "ALL_PRIVILEGES" as ALL_PRIVILEGES_rules_banking
+usecase "ALL_PRIVILEGES" as ALL_PRIVILEGES_rules_consumers
+
+usecase "SELECT" as SELECT_rules_producers
+usecase "SELECT" as SELECT_rules_delivery
+usecase "SELECT" as SELECT_rules_banking
+usecase "SELECT" as SELECT_rules_consumers
+
+usecase "SELECT, UPDATE, INSERT, DELETE" as CRUD_rules_producers
+usecase "SELECT, UPDATE, INSERT, DELETE" as CRUD_rules_delivery
+usecase "SELECT, UPDATE, INSERT, DELETE" as CRUD_rules_banking
+usecase "SELECT, UPDATE, INSERT, DELETE" as CRUD_rules_consumers
+
+ALL_PRIVILEGES_rules_producers --> (producers)
+ALL_PRIVILEGES_rules_delivery --> (delivery)
+ALL_PRIVILEGES_rules_banking --> (banking)
+ALL_PRIVILEGES_rules_consumers --> (consumers)
+
+
+SELECT_rules_producers --> (producers)
+SELECT_rules_delivery --> (delivery)
+SELECT_rules_banking --> (banking)
+SELECT_rules_consumers --> (consumers)
+
+CRUD_rules_producers --> (producers)
+CRUD_rules_delivery --> (delivery)
+CRUD_rules_banking --> (banking)
+CRUD_rules_consumers --> (consumers)
+
+
+'producers'
+ProducersDeveloper --> ALL_PRIVILEGES_rules_producers
+ProducersDeveloper --> SELECT_rules_delivery
+ProducersClient --> CRUD_rules_producers
+ProducersClient --> SELECT_rules_delivery
+
+'delivery'
+DeliveryDeveloper --> ALL_PRIVILEGES_rules_delivery
+DeliveryDeveloper --> SELECT_rules_banking
+DeliveryDeveloper --> SELECT_rules_producers
+DeliveryDeveloper --> SELECT_rules_consumers
+DeliveryClient --> CRUD_rules_delivery
+DeliveryClient --> SELECT_rules_banking
+DeliveryClient --> SELECT_rules_producers
+DeliveryClient --> SELECT_rules_consumers
+
+'banking'
+BankingDeveloper --> ALL_PRIVILEGES_rules_banking
+BankingDeveloper --> SELECT_rules_delivery
+BankingClient --> CRUD_rules_banking
+BankingClient --> SELECT_rules_delivery
+
+'consumers'
+ConsumersDeveloper --> ALL_PRIVILEGES_rules_consumers
+ConsumersDeveloper -> SELECT_rules_delivery
+ConsumersClient --> CRUD_rules_consumers
+ConsumersClient --> SELECT_rules_delivery
+
+@enduml
