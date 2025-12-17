@@ -1,0 +1,63 @@
+@startuml
+package "consumers" {
+  [Client]
+  [City]
+  [Address]
+  [ClientAddress]
+}
+
+package "producers" {
+  [Store]
+  [OperatingHours]
+  [DayOfWeek]
+  [ProductCategory]
+  [Product]
+  [StoreProduct]
+  [ProductCategory]
+  [OperatingHours]
+}
+
+package "delivery" {
+  [Order]
+  [Courier]
+  [Transport]
+  [OrderProduct]
+  [Review]
+  [Status]
+}
+
+package "banking" {
+  [Transaction]
+}
+
+'consumers'
+[Client] --> [ClientAddress]
+[Address] --> [ClientAddress]
+[City] --> [Address]
+
+'producers'
+[Store] --> [StoreProduct]
+[Product] --> [StoreProduct]
+[ProductCategory] --> [Product]
+[DayOfWeek] --> [OperatingHours]
+[OperatingHours] --> [Store]
+
+'delivery'
+[Transport] --> [Courier]
+[Courier] --> [Order]
+[Status] --> [Order]
+[Review] --> [Order]
+[Order] --> [OrderProduct]
+
+'banking - delivery'
+[Transaction] --> [Order]
+
+'producers - delivery'
+[Store] --> [Order]
+[Product] --> [OrderProduct]
+
+'consumers - delivery'
+[Client] --> [Order]
+[Address] --> [Order]
+
+@enduml

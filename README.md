@@ -215,4 +215,19 @@
 
 ![img_2.png](img/img_2.png)
 
+## HW4
+
+### Создание директории для tablespace
+`cd 2025-10-otus-databases-Didenko`  
+`docker-compose up -d`  
+`docker ps`  
+`docker exec -it <id_container> /bin/bash`  
+*Внутри контейнера*  
+`cd /var/lib/postgresql`  
+`mkdir delivery_ts`  
+`chown postgres:postgres delivery_ts`  
+
+Подключиться к PostgreSQL и выполнить скрипт /2025-10-otus-databases-Didenko/sql/initiate_db.sql
+
+
 
